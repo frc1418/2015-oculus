@@ -12,6 +12,15 @@
 /*.userprefs
 /*.pidb
 /*.booproj
+*.svd
 
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+# OS Generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
