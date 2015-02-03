@@ -6,6 +6,12 @@ public class StreamScreen : MonoBehaviour {
 	GameObject screen;
 	WebCamTexture webcamTexture;
 
+	public string cameraName = "";
+
+	public int cameraWidth = 720;
+	public int cameraHeight = 1280;
+	public int cameraFPS = 30;
+
 	// Use this for initialization
 	void Start () {
 
@@ -21,8 +27,9 @@ public class StreamScreen : MonoBehaviour {
 		var deviceName = "";
 
 		foreach (WebCamDevice device in WebCamTexture.devices) {
-			// use the name of the device to pick the Lifecam instead of the webcam?
-			// ... or, use a config file?
+			if (cameraName != "" && device.name.ToLower().Contains(cameraName.ToLower()))
+				deviceName = device.name;
+
 			//Debug.Log("Device:"+device.name+ "IS FRONT FACING:"+ device.isFrontFacing);
 		}
 
@@ -30,7 +37,7 @@ public class StreamScreen : MonoBehaviour {
 			deviceName = WebCamTexture.devices [0].name;
 
 		//
-		webcamTexture = new WebCamTexture (deviceName, 720, 1280, 30);
+		webcamTexture = new WebCamTexture (deviceName, cameraWidth, cameraHeight, cameraFPS);
 		webcamTexture.Play ();
 
 		screen.renderer.material.mainTexture = webcamTexture;

@@ -456,6 +456,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d899c24500e4454b11fe47d13c0de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraName: LifeCam
+  cameraWidth: 720
+  cameraHeight: 1280
+  cameraFPS: 30
 --- !u!1 &1901133603
 GameObject:
   m_ObjectHideFlags: 0
