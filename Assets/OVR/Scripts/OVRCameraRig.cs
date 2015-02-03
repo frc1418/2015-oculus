@@ -54,6 +54,8 @@ public class OVRCameraRig : MonoBehaviour
 	/// </summary>
 	public Transform rightEyeAnchor { get; private set; }
 
+	public bool disableTracking = false;
+
 	private bool needsCameraConfigure;
 
 #region Unity Messages
@@ -97,6 +99,9 @@ public class OVRCameraRig : MonoBehaviour
 
 	private void UpdateAnchors()
 	{
+		if (disableTracking)
+			return;
+
 		OVRPose leftEye = OVRManager.display.GetEyePose(OVREye.Left);
 		OVRPose rightEye = OVRManager.display.GetEyePose(OVREye.Right);
 
