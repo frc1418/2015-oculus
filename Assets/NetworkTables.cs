@@ -1,14 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using System.Json;
+//using WebSocket;
 
-public class Send{
-	public Send(){
-		string key = "Apple";
-		string value = "Pear";
-	}
-}
 
 public class NetworkTables : MonoBehaviour {
 	static NetworkTables instance;
@@ -21,8 +15,11 @@ public class NetworkTables : MonoBehaviour {
 	void Start () {
 		instance = this;
 		Debug.Log ("MOOO!");
-		using (var ws = new WebSocket ("ws://localhost:8888/ws")) {
-			Send send = new Send();
+		/*using (var ws = new WebSocket ("ws://localhost:8888/ws")) {
+			JSONObject j = new JSONObject(JSONObject.Type.OBJECT);
+			j.Add("key", "Apple");
+			j.Add("value", "Pear");
+			string encodedString = j.print();
 			ws.OnOpen += (sender, e) => {
 				Debug.Log("Connected.");
 			};
@@ -36,8 +33,8 @@ public class NetworkTables : MonoBehaviour {
 			};
 
 			ws.Connect ();
-			ws.Send(send);
-		}
+			ws.Send(encodedString);
+		}*/
 	}
 	
 	// Update is called once per frame
