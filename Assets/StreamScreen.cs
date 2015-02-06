@@ -22,7 +22,6 @@ public class StreamScreen : MonoBehaviour {
 		screen = GameObject.Find ("Screen");
 
 		// setup a texture.. 
-		var sz = screen.renderer.bounds.size;
 
 		var deviceName = "";
 
