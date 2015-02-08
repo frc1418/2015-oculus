@@ -19,19 +19,19 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://localhost:8888/ws";
+	public string websocketURL = "ws://localhost:8887/ws";
 
 	// variables
 
-	protected Dictionary<string, object> table = new Dictionary<string, object> ();
+	public Dictionary<string, object> table = new Dictionary<string, object> ();
 
 	// websocket instance
 	protected WebSocket ws = null;
-	bool connected = false;
+	public bool connected = false;
 
 
 	// do not allow creation of this instance
-	protected NetworkTables() {
+	public NetworkTables() {
 	}
 
 	class NumberMessage {
@@ -40,7 +40,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 		public string action = "write";
 	}
 
-	class StringMessage {
+	public class StringMessage {
 		public string key;
 		public string value;
 		public string action = "write";
@@ -48,7 +48,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// Use this for initialization
 	void Start () {
-
+		Debug.Log("NetworkTables Active");
 		ws = new WebSocket (websocketURL);
 
 		// setup event handlers
@@ -67,14 +67,16 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 			// store it in the dictionary
 			table.Add(o.Get("key"), o.Get("value"));
+			//Debug.Log("Key: "+o.Get("key")+"Value: "+o.Get("value"));
 		};
 
 		ws.OnError += (object sender, ErrorEventArgs e) => {
 			if (connected) {
-				if (e.Exception != null)
+				if (e.Exception != null){
 					Debug.LogException(e.Exception);
-				else
+				}else{
 					Debug.LogError("ERROR: " + e.Message);
+				}
 			}
 		};
 
@@ -92,14 +94,12 @@ public class NetworkTables : Singleton<NetworkTables> {
 			ws.ConnectAsync();
 
 		};
-
 		// do the connect
 		ws.ConnectAsync ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
 	}
 
 	#region API
@@ -141,7 +141,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 		msg.key = key;
 		msg.value = value;
 		
-		ws.SendAsync(msg.ToJson(), null);
+		//ws.SendAsync(msg.ToJson(), null);
 	}
 
 	public void PutString(string key, string value) {
@@ -149,12 +149,15 @@ public class NetworkTables : Singleton<NetworkTables> {
 		if (ws == null || ws.ReadyState != WebSocketState.Open) {
 			// TODO: queue up any writes
 		}
-
-		var msg = new StringMessage ();
+		Debug.Log (key+" "+value);
+		var msg = new StringMessage();
+		
+		Debug.Log(msg);
 		msg.key = key;
 		msg.value = value;
-
-		ws.SendAsync(msg.ToJson(), null);
+		//string json = msg.ToJson ();
+		//Debug.Log ("Sending: "+ json);
+		//ws.SendAsync(json, null);
 	}
 
 	#endregion
