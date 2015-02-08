@@ -29,6 +29,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 	protected WebSocket ws = null;
 	public bool connected = false;
 
+	private string pastMessage;
 
 	// do not allow creation of this instance
 	protected NetworkTables() {
@@ -40,7 +41,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 		public string action = "write";
 	}
 
-	public class StringMessage {
+	class StringMessage {
 		public string key;
 		public string value;
 		public string action = "write";
@@ -71,8 +72,9 @@ public class NetworkTables : Singleton<NetworkTables> {
 		};
 
 		ws.OnError += (object sender, ErrorEventArgs e) => {
-			if (e.Exception != null){
+			if (e.Exception != null && e.Message != pastMessage){
 				Debug.LogException(e.Exception);
+				pastMessage = e.Message;
 			}
 		};
 
