@@ -68,7 +68,11 @@ public class NetworkTables : Singleton<NetworkTables> {
 			JsonObject o = JsonObject.Parse(e.Data);
 
 			// store it in the dictionary
-			table.Add(o.Get("key"), o.Get("value"));
+			if(!table.ContainsKey(o.Get("key"))){
+				table.Add(o.Get("key"), o.Get("value"));
+			}else{
+				table[o.Get("key")] = o.Get("value");
+			}
 			//Debug.Log("Key: "+o.Get("key")+"Value: "+o.Get("value"));
 		};
 
@@ -124,7 +128,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 	public bool GetNumber(string key, out double value) {
 		object tmpValue;
 		if (table.TryGetValue (key, out tmpValue)) {
-			value = (double)tmpValue;
+			value = Convert.ToDouble(tmpValue);
 			return true;
 		}
 		
