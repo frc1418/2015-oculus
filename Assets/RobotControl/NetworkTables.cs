@@ -28,6 +28,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 	// websocket instance
 	protected WebSocket ws = null;
 	public bool connected = false;
+	public bool destroyed = false;
 
 	private string pastMessage;
 
@@ -88,9 +89,10 @@ public class NetworkTables : Singleton<NetworkTables> {
 			connected = false;
 
 			// not running on the main thread, so it's ok to sleep here
-			Thread.Sleep(1000);
-			ws.ConnectAsync();
-
+			if (!destroyed) {
+				Thread.Sleep(1000);
+				ws.ConnectAsync();
+			}
 		};
 		// do the connect
 		ws.ConnectAsync ();
@@ -98,6 +100,10 @@ public class NetworkTables : Singleton<NetworkTables> {
 	
 	// Update is called once per frame
 	void Update () {
+	}
+
+	void OnDestroy() {
+		destroyed = true;
 	}
 
 	#region API
