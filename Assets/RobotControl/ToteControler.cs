@@ -64,23 +64,27 @@ public class ToteControler : MonoBehaviour {
 		 */
 		if (sensor == SENSORS.Short) {
 			slope = ((shortRightY - shortLeftY) / shortRightX);
-			double value = slope / Mathf.Abs (slope);
+			double value = slope / Mathf.Abs ((float)slope);
+
 			if (value > 0) {
-				angle = Mathf.Tan (shortRightY / shortRightX);
+				angle = Mathf.Atan ((float)(shortRightY / shortRightX));
 			} else if (value < 0) {
-				angle = 360 - (Mathf.Tan (shortLeftY / shortRightX));
+				angle = 360 - (Mathf.Atan ((float)(shortLeftY / shortRightX)));
 			}
-			displacement = (Mathf.Tan(angle*(Mathf.PI/180)*(shortRightX/2)));
+
+			displacement = (Mathf.Tan((int)(angle*(Mathf.PI/180)*(shortRightX/2))));
 
 		} else if (sensor == SENSORS.Long) {
 			slope = ((longRightY - longLeftY) / longRightX);
-			double value = slope / Mathf.Abs (slope);
+			double value = slope / Mathf.Abs ((float)slope);
+
 			if (value > 0) {
-				angle = ((Mathf.Tanh (longRightY / longRightX))*(180/Mathf.PI));
+				angle = ((Mathf.Atan ((float)(longRightY / longRightX)))*(180/Mathf.PI));
 			} else if (value < 0) {
-				angle = 360 - ((Mathf.Tanh (longLeftY / longRightX))*(180/Mathf.PI));
+				angle = 360 - ((Mathf.Atan ((float)(longLeftY / longRightX)))*(180/Mathf.PI));
 			}
-			displacement = (Mathf.Tan(angle*(Mathf.PI/180)*(longRightX/2)));
+
+			displacement = (Mathf.Tan((int)(angle*(Mathf.PI/180)*(longRightX/2))));
 		}
 
 		/*
