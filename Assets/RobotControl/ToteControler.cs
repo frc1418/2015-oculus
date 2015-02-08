@@ -92,10 +92,9 @@ public class ToteControler : MonoBehaviour {
 		 * NOTE: THIS WILL BREAK IF THE INITAL ANGLE IS OFPUT
 		 */
 		while (transform.eulerAngles.z <= rotation-0.02 || transform.eulerAngles.z >= rotation+0.02) {
-			transform.Rotate (Vector3.back * 1);
+			transform.Rotate (Vector3.right * 1);
 		}
-		
-		transform.position(Vector3(0, 1, 2+displacement));
+		transform.Translate(Vector3.back+displacement);
 	
 
 		//Color indeication if a true surface has been detected.
