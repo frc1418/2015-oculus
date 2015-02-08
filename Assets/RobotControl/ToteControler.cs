@@ -39,11 +39,11 @@ public class ToteControler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (NetworkTables.Instance.connected) {
-			shortLeftY =  NetworkTables.Instance.GetNumber("shortSensorValueL");
-			shortRightY = NetworkTables.Instance.GetNumber("shortSensorValueR");
+			NetworkTables.Instance.GetNumber("shortSensorValueL", out shortLeftY );
+			NetworkTables.Instance.GetNumber("shortSensorValueR", out shortRightY);
 
-			longLeftY = NetworkTables.Instance.GetNumber("longSensorValueL");
-			longRightY = NetworkTables.Instance.GetNumber("longSensorValueR");
+			NetworkTables.Instance.GetNumber("longSensorValueL", out longLeftY);
+			NetworkTables.Instance.GetNumber("longSensorValueR", out longRightY);
 
 			connected = true;
 		} else {
