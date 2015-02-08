@@ -34,6 +34,7 @@ public class ToteControler : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Debug.Log("Tote Controler Active");
 	}
 	
 	// Update is called once per frame
@@ -86,29 +87,26 @@ public class ToteControler : MonoBehaviour {
 
 			displacement = (Mathf.Tan((int)(angle*(Mathf.PI/180)*(longRightX/2))));
 		}
-
-		/*
-		 * While the block is not at the angle add one to the angle
-		 * NOTE: THIS WILL BREAK IF THE INITAL ANGLE IS OFPUT
-		 */
-		while (transform.eulerAngles.z <= rotation-0.02 || transform.eulerAngles.z >= rotation+0.02) {
-			transform.Rotate (Vector3.right * 1);
+		if (!outOfRange) {
+			while (transform.eulerAngles.z <= rotation-1 || transform.eulerAngles.z >= rotation+1) {
+				transform.Rotate (Vector3.right * 1);
+			}
+			float z = (float)(displacement + 2);
+			transform.Translate (0, 1, z);
 		}
-		transform.Translate(Vector3.back+displacement);
-	
 
 		//Color indeication if a true surface has been detected.
 		if (connected != true) {
-			if(!outOfRange){
 				Color red = new Color (255, 0, 0, 255);
 				renderer.material.color = red;
+		} else {
+			if(!outOfRange){
+			Color green = new Color (0, 255, 0, 255);
+			renderer.material.color = green;
 			}else{
 				Color yellow = new Color(255, 255, 0, 255);
 				renderer.material.color = yellow;
 			}
-		} else {
-			Color green = new Color (0, 255, 0, 255);
-			renderer.material.color = green;
 		}
 	}
 }

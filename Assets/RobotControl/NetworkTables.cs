@@ -19,7 +19,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://localhost:8887/ws";
+	public string websocketURL = "ws://127.0.0.1:8888/ws";
 
 	// variables
 
@@ -71,12 +71,8 @@ public class NetworkTables : Singleton<NetworkTables> {
 		};
 
 		ws.OnError += (object sender, ErrorEventArgs e) => {
-			if (connected) {
-				if (e.Exception != null){
-					Debug.LogException(e.Exception);
-				}else{
-					Debug.LogError("ERROR: " + e.Message);
-				}
+			if (e.Exception != null){
+				Debug.LogException(e.Exception);
 			}
 		};
 

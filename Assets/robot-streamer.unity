@@ -471,6 +471,7 @@ GameObject:
   - 33: {fileID: 1812930795}
   - 65: {fileID: 1812930794}
   - 23: {fileID: 1812930793}
+  - 114: {fileID: 1812930797}
   m_Layer: 0
   m_Name: Tote
   m_TagString: Untagged
@@ -490,7 +491,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: ebb218e715c2d471a8b31f24f11da613, type: 2}
+  - {fileID: 2100000, guid: efd86b01b2de34ae4bfe6660d1ea3467, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -529,6 +530,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &1812930797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1812930792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06310ff757624526969bedf9e06266b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotation: 0
 --- !u!1 &1901133603
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   websocketURL: ws://localhost:8887/ws
+  connected: 0
 --- !u!4 &1953617634
 Transform:
   m_ObjectHideFlags: 0
