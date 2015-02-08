@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class ToteControler : MonoBehaviour {
-	NetworkTables netTables = new NetworkTables ();
+	//NetworkTables netTables = new NetworkTables ();
 
 	public int rotation;
 	private bool outOfRange;
@@ -16,6 +16,7 @@ public class ToteControler : MonoBehaviour {
 	};
 	private SENSORS sensor; 
 
+	private double displacement;
 	private double slope;
 	private double angle;
 
@@ -37,12 +38,12 @@ public class ToteControler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (netTables.connected) {
-			shortLeftY = netTables.table["shortSensorValueL"];
-			shortRightY = netTables.table["shortSensorValueR"];
+		if (NetworkTables.Instance.connected) {
+			shortLeftY =  NetworkTables.Instance.GetNumber("shortSensorValueL");
+			shortRightY = NetworkTables.Instance.GetNumber("shortSensorValueR");
 
-			longLeftY = netTables.table["longSensorValueL"];
-			longRightY = netTables.table["longSensorValueR"];
+			longLeftY = NetworkTables.Instance.GetNumber("longSensorValueL");
+			longRightY = NetworkTables.Instance.GetNumber("longSensorValueR");
 
 			connected = true;
 		} else {
@@ -55,12 +56,33 @@ public class ToteControler : MonoBehaviour {
 			sensor = SENSORS.Short;
 		}else{
 			sensor = SENSORS.OutOfRange;
+			outOfRange = true;
 		}
 
-		if(sensor == SENSORS.Short){
-			slope = ((shortRightY - shortLeftY)/shortRightX);
-			//angle
+		/*
+		 * Solve for angle
+		 */
+		if (sensor == SENSORS.Short) {
+			slope = ((shortRightY - shortLeftY) / shortRightX);
+			double value = slope / Mathf.Abs (slope);
+			if (value > 0) {
+				angle = Mathf.Tan (shortRightY / shortRightX);
+			} else if (value < 0) {
+				angle = 360 - (Mathf.Tan (shortLeftY / shortRightX));
+			}
+			displacement = (Mathf.Tan(angle*(Mathf.PI/180)*(shortRightX/2)));
+
+		} else if (sensor == SENSORS.Long) {
+			slope = ((longRightY - longLeftY) / longRightX);
+			double value = slope / Mathf.Abs (slope);
+			if (value > 0) {
+				angle = ((Mathf.Tanh (longRightY / longRightX))*(180/Mathf.PI));
+			} else if (value < 0) {
+				angle = 360 - ((Mathf.Tanh (longLeftY / longRightX))*(180/Mathf.PI));
+			}
+			displacement = (Mathf.Tan(angle*(Mathf.PI/180)*(longRightX/2)));
 		}
+
 		/*
 		 * While the block is not at the angle add one to the angle
 		 * NOTE: THIS WILL BREAK IF THE INITAL ANGLE IS OFPUT
@@ -68,11 +90,19 @@ public class ToteControler : MonoBehaviour {
 		while (transform.eulerAngles.z <= rotation-0.02 || transform.eulerAngles.z >= rotation+0.02) {
 			transform.Rotate (Vector3.back * 1);
 		}
+		
+		transform.position(Vector3(0, 1, 2+displacement));
+	
 
 		//Color indeication if a true surface has been detected.
 		if (connected != true) {
-			Color red = new Color (255, 0, 0, 255);
-			renderer.material.color = red;
+			if(!outOfRange){
+				Color red = new Color (255, 0, 0, 255);
+				renderer.material.color = red;
+			}else{
+				Color yellow = new Color(255, 255, 0, 255);
+				renderer.material.color = yellow;
+			}
 		} else {
 			Color green = new Color (0, 255, 0, 255);
 			renderer.material.color = green;

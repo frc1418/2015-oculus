@@ -33,8 +33,7 @@ public class StreamScreen : MonoBehaviour {
 		}
 
 		if (deviceName == "")
-			deviceName = WebCamTexture.devices [WebCamTexture.devices.GetLength()].name;
-
+			deviceName = WebCamTexture.devices [0].name;
 		//
 		webcamTexture = new WebCamTexture (deviceName, cameraWidth, cameraHeight, cameraFPS);
 		webcamTexture.Play ();

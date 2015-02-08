@@ -23,7 +23,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// variables
 
-	public Dictionary<string, object> table = new Dictionary<string, object> ();
+	protected Dictionary<string, object> table = new Dictionary<string, object> ();
 
 	// websocket instance
 	protected WebSocket ws = null;
@@ -31,7 +31,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 
 	// do not allow creation of this instance
-	public NetworkTables() {
+	protected NetworkTables() {
 	}
 
 	class NumberMessage {
