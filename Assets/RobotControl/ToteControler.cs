@@ -49,6 +49,13 @@ public class ToteControler : MonoBehaviour {
 	}
 
 	public void calculate(double leftY, double rightY, double x){
+		if (sensor == SENSORS.Short) {
+			leftY -= 6;
+			rightY -= 5;
+		} else if (sensor == SENSORS.Long) {
+			leftY -= 19.5;
+			leftY -= 19.5;
+		}
 		slope = ((rightY - leftY) / x);
 		double value = (float)slope / Mathf.Abs ((float)slope);
 		
