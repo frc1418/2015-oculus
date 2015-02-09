@@ -19,7 +19,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://localhost:8888/ws";
+	public string websocketURL = "ws://127.0.0.1:8888/ws";
 
 	// variables
 
@@ -27,8 +27,10 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// websocket instance
 	protected WebSocket ws = null;
-	bool connected = false;
+	public bool connected = false;
+	public bool destroyed = false;
 
+	private string pastMessage;
 
 	// do not allow creation of this instance
 	protected NetworkTables() {
@@ -48,7 +50,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// Use this for initialization
 	void Start () {
-
+		Debug.Log("NetworkTables Active");
 		ws = new WebSocket (websocketURL);
 
 		// setup event handlers
@@ -66,15 +68,18 @@ public class NetworkTables : Singleton<NetworkTables> {
 			JsonObject o = JsonObject.Parse(e.Data);
 
 			// store it in the dictionary
-			table.Add(o.Get("key"), o.Get("value"));
+			if(!table.ContainsKey(o.Get("key"))){
+				table.Add(o.Get("key"), o.Get("value"));
+			}else{
+				table[o.Get("key")] = o.Get("value");
+			}
+			//Debug.Log("Key: "+o.Get("key")+"Value: "+o.Get("value"));
 		};
 
 		ws.OnError += (object sender, ErrorEventArgs e) => {
-			if (connected) {
-				if (e.Exception != null)
-					Debug.LogException(e.Exception);
-				else
-					Debug.LogError("ERROR: " + e.Message);
+			if (e.Exception != null && e.Message != pastMessage){
+				Debug.LogException(e.Exception);
+				pastMessage = e.Message;
 			}
 		};
 
@@ -88,18 +93,21 @@ public class NetworkTables : Singleton<NetworkTables> {
 			connected = false;
 
 			// not running on the main thread, so it's ok to sleep here
-			Thread.Sleep(1000);
-			ws.ConnectAsync();
-
+			if (!destroyed) {
+				Thread.Sleep(1000);
+				ws.ConnectAsync();
+			}
 		};
-
 		// do the connect
 		ws.ConnectAsync ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+	}
 
+	void OnDestroy() {
+		destroyed = true;
 	}
 
 	#region API
@@ -120,7 +128,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 	public bool GetNumber(string key, out double value) {
 		object tmpValue;
 		if (table.TryGetValue (key, out tmpValue)) {
-			value = (double)tmpValue;
+			value = Convert.ToDouble(tmpValue);
 			return true;
 		}
 		
@@ -141,7 +149,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 		msg.key = key;
 		msg.value = value;
 		
-		ws.SendAsync(msg.ToJson(), null);
+		//ws.SendAsync(msg.ToJson(), null);
 	}
 
 	public void PutString(string key, string value) {
@@ -149,12 +157,15 @@ public class NetworkTables : Singleton<NetworkTables> {
 		if (ws == null || ws.ReadyState != WebSocketState.Open) {
 			// TODO: queue up any writes
 		}
-
-		var msg = new StringMessage ();
+		Debug.Log (key+" "+value);
+		var msg = new StringMessage();
+		
+		Debug.Log(msg);
 		msg.key = key;
 		msg.value = value;
-
-		ws.SendAsync(msg.ToJson(), null);
+		//string json = msg.ToJson ();
+		//Debug.Log ("Sending: "+ json);
+		//ws.SendAsync(json, null);
 	}
 
 	#endregion
