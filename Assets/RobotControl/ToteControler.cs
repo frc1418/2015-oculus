@@ -5,13 +5,14 @@ public class ToteControler : MonoBehaviour {
 	//NetworkTables netTables = new NetworkTables ();
 
 	private double rotation = 0;
-	private bool outOfRange;
 	private bool connected;
 
 	private enum SENSORS
 	{
 		Long,
 		Short,
+		SoloL,
+		SoloR,
 		OutOfRange
 	};
 	private SENSORS sensor; 
@@ -24,13 +25,23 @@ public class ToteControler : MonoBehaviour {
 	private double shortLeftX = 0;
 	private double shortRightX = 34.8;
 	private double shortLeftY = 35;
+	private double shortLeftDist;
 	private double shortRightY = 35;
-
+	private double shortRightDist;
+		
 	//Long range sensore relative pos
 	private double longLeftX = 0;
 	private double longRightX = 22.8;
 	private double longLeftY = 200;
+	private double longLeftDist;
 	private double longRightY = 200;
+	private double longRightDist;
+
+	//Distance from front of robot
+	//private double 
+
+	//Lim switchs
+	//private bool limSwitch
 	// Use this for initialization
 	private void reset(){
 		longLeftX = 0;
@@ -49,13 +60,7 @@ public class ToteControler : MonoBehaviour {
 	}
 
 	public void calculate(double leftY, double rightY, double x){
-		if (sensor == SENSORS.Short) {
-			leftY -= 6;
-			rightY -= 5;
-		} else if (sensor == SENSORS.Long) {
-			leftY -= 19.5;
-			leftY -= 19.5;
-		}
+
 		slope = ((rightY - leftY) / x);
 		double value = (float)slope / Mathf.Abs ((float)slope);
 		
@@ -106,29 +111,53 @@ public class ToteControler : MonoBehaviour {
 			connected = false;
 		}
 
-		if(shortLeftY < 35 && shortRightY < 35){
+		//Relative to front of robot
+		shortLeftDist = shortLeftY - 5.5;
+		shortRightDist = shortRightY - 5.5;
+		longLeftDist = longLeftY - 19.5;
+		longRightDist = longRightY - 19.5;
+
+		Debug.Log ("sL: " + shortLeftY + " sR: " + shortRightY + " lL: " + longLeftY + " lR: " + longRightY);
+
+		if (shortLeftY < 35 && shortRightY < 35) {
 			sensor = SENSORS.Short;
-			outOfRange = false;
-		}else if(longLeftY < 200 && longRightY < 200 ){
+
+		} else if (longLeftY < 200 && longRightY < 200) {
 			sensor = SENSORS.Long;
-			outOfRange = false;
+
+		} else if (shortLeftY < 35){
+			sensor = SENSORS.SoloL;
+			displacement = shortLeftDist/100;
+
+		} else if (shortRightY < 35){
+			sensor = SENSORS.SoloR;
+			displacement = shortRightDist/100;
+
+		}else if (longLeftY < 200){
+			sensor = SENSORS.SoloL;
+			displacement = longLeftDist/100;
+
+		}else if (longRightY < 200){
+			sensor = SENSORS.SoloR;
+			displacement = longRightDist/100;
+
 		}else{
 			sensor = SENSORS.OutOfRange;
-			outOfRange = true;
 		}
+		Debug.Log ("Sensor: " + sensor);
 
 		/*
 		 * Solve for angle and displacement
 		 */
 	
 		if (sensor == SENSORS.Short) {
-			calculate(shortLeftY,shortRightY, shortRightX);
+			calculate(shortLeftDist,shortRightDist, shortRightX);
 			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " LY: " + shortLeftY + " RY: " + shortRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
 
 		} else if (sensor == SENSORS.Long) {
-			calculate(longLeftY,longRightY,longRightX);
+			calculate(longLeftDist,longRightDist,longRightX);
 			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " LY: " + longLeftY + " RY: " + longRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
-		} else if (sensor == SENSORS.OutOfRange) {
+		}else if (sensor == SENSORS.OutOfRange) {
 			reset();
 			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
 
@@ -137,10 +166,25 @@ public class ToteControler : MonoBehaviour {
 		/*
 		 * Roation and Transformation
 		 */
-		transform.localEulerAngles = new Vector3(0,(float)rotation,90);
-		float z = (float)(displacement + 2);
+		float x = 0;
+		float z = (float)(displacement + 2.5);
 		float y = 0.24f;
-		transform.localPosition = new Vector3(0,y,z);
+
+		if (sensor == SENSORS.SoloL) {
+			Debug.Log("SOLOL");
+			transform.localScale = new Vector3(0.53f, 0.5f, 0.3f);
+			x = -0.25f;
+		} else if (sensor == SENSORS.SoloR) {
+			Debug.Log("SOLOR");
+			transform.localScale = new Vector3(0.53f, 0.5f, 0.3f);
+			x = 0.25f;
+		} else {
+			transform.localScale = new Vector3(0.53f, 1f, 0.3f);
+			x = 0f;
+		}
+		transform.localEulerAngles = new Vector3(0,(float)rotation,90);
+
+		transform.localPosition = new Vector3(x,y,z);
 
 		/*
 		 * Color indication of state
@@ -149,10 +193,13 @@ public class ToteControler : MonoBehaviour {
 				Color red = new Color (255, 0, 0, 255);
 				renderer.material.color = red;
 		} else {
-			if(!outOfRange){
+			if(sensor == SENSORS.Long || sensor == SENSORS.Short){
 			Color green = new Color (0, 255, 0, 255);
 			renderer.material.color = green;
-			}else{
+			}else if(sensor == SENSORS.SoloL || sensor == SENSORS.SoloR){
+				Color blue = new Color(0, 0, 255, 255);
+				renderer.material.color = blue;
+			}else if(sensor == SENSORS.OutOfRange){
 				Color yellow = new Color(255, 255, 0, 255);
 				renderer.material.color = yellow;
 			}
