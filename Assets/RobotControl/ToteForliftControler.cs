@@ -85,21 +85,21 @@ public class ToteForliftControler : MonoBehaviour {
 				float rawValue = initalYPos + localCurrent;
 
 				if(rawValue >=-1 && rawValue <= (ladderTop/200)){
-					Debug.Log("On: "+i);
+					//Debug.Log("On: "+i);
 					float x = initalXPos;
 					float y = initalYPos + localCurrent;
 					float z = initalZPos;
 					rungs[i].transform.localPosition = new Vector3(x, y, z);
 
 				}else if(rawValue < -1){
-					Debug.Log("Under on: "+i);
+					//Debug.Log("Under on: "+i);
 					float x = (-1*initalXPos);
 					float y = initalYPos + (-1*localCurrent);
 					float z = initalZPos;
 					rungs[i].transform.localPosition = new Vector3(x, y, z);
 
 				}else{
-					Debug.Log("Over on: "+i);
+					//Debug.Log("Over on: "+i);
 					float x = (-1*initalXPos);
 					float y = (ladderTop/200) - (localCurrent - (ladderTop/100));
 					float z = initalZPos;
@@ -126,6 +126,6 @@ public class ToteForliftControler : MonoBehaviour {
 				}
 			}
 		}
-		Debug.Log ("Value: " + currentValue + " LadderValue: " + currentLadderMeters +"Displacement: "+actualDisplacment+" LDiplace: "+ladderDisplacment+ " Connected: " + connected + " Calibrated: " + calibrated);
+		//Debug.Log ("Value: " + currentValue + " LadderValue: " + currentLadderMeters +"Displacement: "+actualDisplacment+" LDiplace: "+ladderDisplacment+ " Connected: " + connected + " Calibrated: " + calibrated);
 	}	
 }
