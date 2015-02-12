@@ -136,6 +136,17 @@ public class NetworkTables : Singleton<NetworkTables> {
 		return false;
 	}
 
+	public bool GetBool(string key, out bool value) {
+		object tmpValue;
+		if (table.TryGetValue (key, out tmpValue)) {
+			value = Convert.ToBoolean(tmpValue);
+			return true;
+		}
+		
+		value = false;
+		return false;
+	}
+
 	public void PutNumber(string key, double value) {
 
 		if (ws == null || ws.ReadyState != WebSocketState.Open) {
