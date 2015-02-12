@@ -198,7 +198,7 @@ public class ToteControler : MonoBehaviour {
 				renderer.material.color = red;
 		} else {
 			if(sensor == SENSORS.Long || sensor == SENSORS.Short){
-				if(!lim1 && !lim2){
+				if(lim1 && lim2){
 					Color green = new Color (0, 255, 0, 255);
 					renderer.material.color = green;
 				}else{
