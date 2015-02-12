@@ -29,12 +29,12 @@ public class StreamScreen : MonoBehaviour {
 			if (cameraName != "" && device.name.ToLower().Contains(cameraName.ToLower()))
 				deviceName = device.name;
 
-			//Debug.Log("Device:"+device.name+ "IS FRONT FACING:"+ device.isFrontFacing);
+			Debug.Log("Device:"+device.name+ "IS FRONT FACING:"+ device.isFrontFacing);
 		}
 
 		if (deviceName == "")
 			deviceName = WebCamTexture.devices [WebCamTexture.devices.Length-1].name;
-		//
+		//Debug.Log ("deviceName: " + deviceName + "deviceLen" + WebCamTexture.devices.Lengthe);
 		webcamTexture = new WebCamTexture (deviceName, cameraWidth, cameraHeight, cameraFPS);
 		webcamTexture.Play ();
 

@@ -4,6 +4,10 @@ using System.Collections;
 public class ToteControler : MonoBehaviour {
 	//NetworkTables netTables = new NetworkTables ();
 
+	private float initalX;
+	private float initalY;
+	private float initalZ;
+
 	private double rotation = 0;
 	private bool connected;
 
@@ -22,16 +26,14 @@ public class ToteControler : MonoBehaviour {
 	private double angle;
 
 	//Short range sensor relative pos
-	private double shortLeftX = 0;
-	private double shortRightX = 34.8;
+	private double shortRightX = 31;
 	private double shortLeftY = 35;
 	private double shortLeftDist;
 	private double shortRightY = 35;
 	private double shortRightDist;
 		
 	//Long range sensore relative pos
-	private double longLeftX = 0;
-	private double longRightX = 22.8;
+	private double longRightX = 20.5;
 	private double longLeftY = 200;
 	private double longLeftDist;
 	private double longRightY = 200;
@@ -44,12 +46,10 @@ public class ToteControler : MonoBehaviour {
 	//private bool limSwitch
 	// Use this for initialization
 	private void reset(){
-		longLeftX = 0;
 		longRightX = 22.8;
 		longLeftY = 200;
 		longRightY = 200;
 
-		shortLeftX = 0;
 		shortRightX = 34.8;
 		shortLeftY = 35;
 		shortRightY = 35;
@@ -95,6 +95,10 @@ public class ToteControler : MonoBehaviour {
 
 	void Start () {
 		Debug.Log("Tote Controler Active");
+
+		initalX = transform.localPosition.x;
+		initalY = transform.localPosition.y;
+		initalZ = transform.localPosition.z;
 	}
 	
 	// Update is called once per frame
@@ -112,12 +116,11 @@ public class ToteControler : MonoBehaviour {
 		}
 
 		//Relative to front of robot
-		shortLeftDist = shortLeftY - 5.5;
-		shortRightDist = shortRightY - 5.5;
+		shortLeftDist = shortLeftY - 7.5;
+		shortRightDist = shortRightY - 6;
 		longLeftDist = longLeftY - 19.5;
 		longRightDist = longRightY - 19.5;
 
-		Debug.Log ("sL: " + shortLeftY + " sR: " + shortRightY + " lL: " + longLeftY + " lR: " + longRightY);
 
 		if (shortLeftY < 35 && shortRightY < 35) {
 			sensor = SENSORS.Short;
@@ -144,7 +147,6 @@ public class ToteControler : MonoBehaviour {
 		}else{
 			sensor = SENSORS.OutOfRange;
 		}
-		Debug.Log ("Sensor: " + sensor);
 
 		/*
 		 * Solve for angle and displacement
@@ -166,20 +168,18 @@ public class ToteControler : MonoBehaviour {
 		/*
 		 * Roation and Transformation
 		 */
-		float x = 0;
-		float z = (float)(displacement + 2.5);
-		float y = 0.24f;
+		float x = initalX;
+		float z = (float)(displacement + initalZ);
+		float y = initalY;
 
 		if (sensor == SENSORS.SoloL) {
-			Debug.Log("SOLOL");
-			transform.localScale = new Vector3(0.53f, 0.5f, 0.3f);
+			transform.localScale = new Vector3(0.53f, 0.25f, 0.3f);
 			x = -0.25f;
 		} else if (sensor == SENSORS.SoloR) {
-			Debug.Log("SOLOR");
-			transform.localScale = new Vector3(0.53f, 0.5f, 0.3f);
+			transform.localScale = new Vector3(0.53f, 0.25f, 0.3f);
 			x = 0.25f;
 		} else {
-			transform.localScale = new Vector3(0.53f, 1f, 0.3f);
+			transform.localScale = new Vector3(0.53f, 0.5f, 0.3f);
 			x = 0f;
 		}
 		transform.localEulerAngles = new Vector3(0,(float)rotation,90);

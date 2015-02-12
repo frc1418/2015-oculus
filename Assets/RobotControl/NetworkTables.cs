@@ -19,7 +19,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://127.0.0.1:8888/ws";
+	public string websocketURL = "ws://127.0.0.1:8887/ws";
 
 	// variables
 
@@ -133,6 +133,17 @@ public class NetworkTables : Singleton<NetworkTables> {
 		}
 		
 		value = 0;
+		return false;
+	}
+
+	public bool GetBool(string key, out bool value) {
+		object tmpValue;
+		if (table.TryGetValue (key, out tmpValue)) {
+			value = Convert.ToBoolean(tmpValue);
+			return true;
+		}
+		
+		value = false;
 		return false;
 	}
 
