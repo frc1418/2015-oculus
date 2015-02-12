@@ -39,8 +39,9 @@ public class ToteControler : MonoBehaviour {
 	private double longRightY = 200;
 	private double longRightDist;
 
-	//Distance from front of robot
-	//private double 
+	//Limit switches
+	private bool lim1;
+	private bool lim2;
 
 	//Lim switchs
 	//private bool limSwitch
@@ -109,6 +110,9 @@ public class ToteControler : MonoBehaviour {
 
 			NetworkTables.Instance.GetNumber("longSensorValueL", out longLeftY);
 			NetworkTables.Instance.GetNumber("longSensorValueR", out longRightY);
+
+			NetworkTables.Instance.GetBool("lim1", out lim1);
+			NetworkTables.Instance.GetBool("lim2", out lim2);
 
 			connected = true;
 		} else {
@@ -194,8 +198,13 @@ public class ToteControler : MonoBehaviour {
 				renderer.material.color = red;
 		} else {
 			if(sensor == SENSORS.Long || sensor == SENSORS.Short){
-			Color green = new Color (0, 255, 0, 255);
-			renderer.material.color = green;
+				if(!lim1 && !lim2){
+					Color green = new Color (0, 255, 0, 255);
+					renderer.material.color = green;
+				}else{
+					Color light_blue = new Color (0, 255, 255, 255);
+					renderer.material.color = light_blue;
+				}
 			}else if(sensor == SENSORS.SoloL || sensor == SENSORS.SoloR){
 				Color blue = new Color(0, 0, 255, 255);
 				renderer.material.color = blue;
