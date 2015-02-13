@@ -111,8 +111,8 @@ public class ToteControler : MonoBehaviour {
 			NetworkTables.Instance.GetNumber("longSensorValueL", out longLeftY);
 			NetworkTables.Instance.GetNumber("longSensorValueR", out longRightY);
 
-			NetworkTables.Instance.GetBool("lim1", out lim1);
-			NetworkTables.Instance.GetBool("lim2", out lim2);
+			NetworkTables.Instance.GetBool("toteLimitL", out lim1);
+			NetworkTables.Instance.GetBool("toteLimitR", out lim2);
 
 			connected = true;
 		} else {
@@ -198,7 +198,7 @@ public class ToteControler : MonoBehaviour {
 				renderer.material.color = red;
 		} else {
 			if(sensor == SENSORS.Long || sensor == SENSORS.Short){
-				if(lim1 && lim2){
+				if(!lim1 && !lim2){
 					Color green = new Color (0, 255, 0, 255);
 					renderer.material.color = green;
 				}else{
