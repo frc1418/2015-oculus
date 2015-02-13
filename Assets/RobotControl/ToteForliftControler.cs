@@ -6,9 +6,9 @@ public class ToteForliftControler : MonoBehaviour {
 	private static float ladderTop = 200;
 
 	//Preset positions from the encoder
-	private static float actualTop = 150;
-	private static float actualDisplacment = 30;
-	private static float actualBottom = 40;
+	private static float actualTop = 23973;
+	private static float actualDisplacment = 4356;
+	private static float actualBottom = 8293;
 	private static float resetValue = 260;
 
 	//State vars
@@ -30,9 +30,9 @@ public class ToteForliftControler : MonoBehaviour {
 
 	public float convertToLadderMeters(float value, bool raw){
 		//Resets past reset value
-		if (value / resetValue >= 0) {
+		/*if (value / resetValue >= 0) {
 			value = value % resetValue;
-		}
+		}*/
 
 		float conversionFactor = (ladderTop / (actualTop - actualBottom));
 		float lm;
@@ -63,7 +63,7 @@ public class ToteForliftControler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (NetworkTables.Instance.connected) {
-			NetworkTables.Instance.GetBool("stoteCalibrated", out calibrated);
+			NetworkTables.Instance.GetBool("toteCalibrated", out calibrated);
 
 			if(calibrated){
 				double grabbedValue;
