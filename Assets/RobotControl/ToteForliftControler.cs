@@ -63,6 +63,7 @@ public class ToteForliftControler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (NetworkTables.Instance.connected) {
+			connected = true;
 			NetworkTables.Instance.GetBool("toteCalibrated", out calibrated);
 
 			if(calibrated){
@@ -70,7 +71,6 @@ public class ToteForliftControler : MonoBehaviour {
 				NetworkTables.Instance.GetNumber("toteEncoder", out grabbedValue );
 				currentValue = (float)grabbedValue;
 			}
-			connected = true;
 		} else {
 			connected = false;
 		}
