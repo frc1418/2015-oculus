@@ -4,9 +4,16 @@ using System.Collections;
 public class CanForklifControler : MonoBehaviour {
 	//Top of the latter in  Latter Meters (cm for the 3d scale)
 	private static float ladderTop = 200;
+
+	//Shaders
+	public Shader defualt;
+	public Shader translucent;
+	public Color transBlack;
+
+	private string smartDashTable = "";
 	
 	//Preset positions from the encoder
-	private static float actualTop = 400;
+	private static float actualTop = 10180;
 	private static float actualBottom = 0;
 
 	//State vars
@@ -38,6 +45,11 @@ public class CanForklifControler : MonoBehaviour {
 		Debug.Log("Can Forklift Active");
 		
 		lift = GameObject.Find("/Can_ForkLift_Sim/Lift");
+
+		transBlack = new Color(0,0,0,0f);
+
+		translucent = Shader.Find ("Transparent/Diffuse");
+		defualt = Shader.Find ("Diffuse");
 		
 		initalXPos = lift.transform.localPosition.x;
 		initalYPos = lift.transform.localPosition.y;
@@ -48,11 +60,11 @@ public class CanForklifControler : MonoBehaviour {
 	void Update () {
 		if (NetworkTables.Instance.connected) {
 			connected = true;
-			NetworkTables.Instance.GetBool("canCalibrated", out calibrated);
+			NetworkTables.Instance.GetBool(smartDashTable+"Can Forklift|Calibrated", out calibrated);
 			
 			if(calibrated){
 				double grabbedValue;
-				NetworkTables.Instance.GetNumber("canEncoder", out grabbedValue );
+				NetworkTables.Instance.GetNumber(smartDashTable+"Can Forklift|Encoder", out grabbedValue );
 				currentValue = (float)grabbedValue;
 			}
 		} else {
@@ -65,27 +77,20 @@ public class CanForklifControler : MonoBehaviour {
 
 
 			if(rawValue >=-1 && rawValue <= (ladderTop/200)){
-				//Debug.Log("I AM CHANGING SHIT BRO");
 				lift.transform.localPosition = new Vector3(initalXPos, rawValue, initalZPos);
 			}
 		}
 		
 		if (!connected) {
-			Color black = new Color (0, 0, 0, 255);
-			for(int i = 0; i<=2; i++){
-				lift.renderer.material.color = black;
-			}
-		} else {
+			//Debug.Log("I AM CHANGING SHIT BRO");
+			lift.renderer.material.shader = translucent;
+			lift.renderer.material.color = transBlack;
+		}else{
+			lift.renderer.material.shader = defualt;
 			if(calibrated){
-				Color green = new Color (0, 255, 0, 255);
-				for(int i = 0; i<=2; i++){
-					lift.renderer.material.color = green;
-				};
+				lift.renderer.material.color = Color.green;
 			}else{
-				Color yellow = new Color (255, 255, 0, 255);
-				for(int i = 0; i<=2; i++){
-					lift.renderer.material.color = yellow;
-				}
+				lift.renderer.material.color = Color.yellow;
 			}
 		}
 		//Debug.Log ("Connect: " + connected + " Calibrated: " + calibrated +" CurrentValue: " + currentLadderMeters); //+"Displacement: "+actualDisplacment+" LDiplace: "+ladderDisplacment+ " Connected: " + connected + " Calibrated: " + calibrated);

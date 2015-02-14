@@ -6,6 +6,9 @@ public class LampControler : MonoBehaviour {
 	private bool connected;
 	private bool reversedDrive;
 
+	private string smartDashTable = "";
+
+	
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Lamp Controler Active");
@@ -17,18 +20,16 @@ public class LampControler : MonoBehaviour {
 	void Update () {
 		if (NetworkTables.Instance.connected) {
 			connected = true;
-			NetworkTables.Instance.GetBool ("toteCalibrated", out reversedDrive);
+			NetworkTables.Instance.GetBool (smartDashTable+"toteCalibrated", out reversedDrive);
 		} else {
 			connected = false;
 		}
 
 		if (connected) {
 			if(reversedDrive){
-				Color red = new Color (255, 0, 0, 255);
-				directionLamp.renderer.material.color = red;
+				directionLamp.renderer.material.color = Color.red;
 			}else{
-				Color green = new Color (0, 255, 0, 255);
-				directionLamp.renderer.material.color = green;
+				directionLamp.renderer.material.color = Color.green;
 			}
 		} else {
 			directionLamp.renderer.material.color = Color.gray;
