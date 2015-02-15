@@ -11,6 +11,8 @@ public class ToteControler : MonoBehaviour {
 	private double rotation = 0;
 	private bool connected;
 
+	private string smartDashTable = "";
+	
 	private enum SENSORS
 	{
 		Long,
@@ -101,18 +103,19 @@ public class ToteControler : MonoBehaviour {
 		initalY = transform.localPosition.y;
 		initalZ = transform.localPosition.z;
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 		if (NetworkTables.Instance.connected) {
-			NetworkTables.Instance.GetNumber("shortSensorValueL", out shortLeftY );
-			NetworkTables.Instance.GetNumber("shortSensorValueR", out shortRightY);
+			NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueL", out shortLeftY );
+			NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueR", out shortRightY);
 
-			NetworkTables.Instance.GetNumber("longSensorValueL", out longLeftY);
-			NetworkTables.Instance.GetNumber("longSensorValueR", out longRightY);
+			NetworkTables.Instance.GetNumber(smartDashTable+"longSensorValueL", out longLeftY);
+			NetworkTables.Instance.GetNumber(smartDashTable+"longSensorValueR", out longRightY);
 
-			NetworkTables.Instance.GetBool("toteLimitL", out lim1);
-			NetworkTables.Instance.GetBool("toteLimitR", out lim2);
+			NetworkTables.Instance.GetBool(smartDashTable+"toteLimitL", out lim1);
+			NetworkTables.Instance.GetBool(smartDashTable+"toteLimitR", out lim2);
 
 			connected = true;
 		} else {
@@ -129,7 +132,7 @@ public class ToteControler : MonoBehaviour {
 		if (shortLeftY < 35 && shortRightY < 35) {
 			sensor = SENSORS.Short;
 
-		} else if (longLeftY < 200 && longRightY < 200) {
+		} else if (longLeftY < 145 && longRightY < 145) {
 			sensor = SENSORS.Long;
 
 		} else if (shortLeftY < 35){
@@ -140,11 +143,11 @@ public class ToteControler : MonoBehaviour {
 			sensor = SENSORS.SoloR;
 			displacement = shortRightDist/100;
 
-		}else if (longLeftY < 200){
+		}else if (longLeftY < 145){
 			sensor = SENSORS.SoloL;
 			displacement = longLeftDist/100;
 
-		}else if (longRightY < 200){
+		}else if (longRightY < 145){
 			sensor = SENSORS.SoloR;
 			displacement = longRightDist/100;
 
@@ -152,10 +155,7 @@ public class ToteControler : MonoBehaviour {
 			sensor = SENSORS.OutOfRange;
 		}
 
-		/*
-		 * Solve for angle and displacement
-		 */
-	
+
 		if (sensor == SENSORS.Short) {
 			calculate(shortLeftDist,shortRightDist, shortRightX);
 			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " LY: " + shortLeftY + " RY: " + shortRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
@@ -169,9 +169,6 @@ public class ToteControler : MonoBehaviour {
 
 		}
 
-		/*
-		 * Roation and Transformation
-		 */
 		float x = initalX;
 		float z = (float)(displacement + initalZ);
 		float y = initalY;
@@ -190,27 +187,19 @@ public class ToteControler : MonoBehaviour {
 
 		transform.localPosition = new Vector3(x,y,z);
 
-		/*
-		 * Color indication of state
-		 */
 		if (connected != true) {
-				Color red = new Color (255, 0, 0, 255);
-				renderer.material.color = red;
+				renderer.material.color = Color.red;
 		} else {
 			if(sensor == SENSORS.Long || sensor == SENSORS.Short){
 				if(!lim1 && !lim2){
-					Color green = new Color (0, 255, 0, 255);
-					renderer.material.color = green;
+					renderer.material.color = Color.green;
 				}else{
-					Color light_blue = new Color (0, 255, 255, 255);
-					renderer.material.color = light_blue;
+					renderer.material.color = Color.cyan;
 				}
 			}else if(sensor == SENSORS.SoloL || sensor == SENSORS.SoloR){
-				Color blue = new Color(0, 0, 255, 255);
-				renderer.material.color = blue;
+				renderer.material.color = Color.blue;
 			}else if(sensor == SENSORS.OutOfRange){
-				Color yellow = new Color(255, 255, 0, 255);
-				renderer.material.color = yellow;
+				renderer.material.color = Color.yellow;
 			}
 		}
 		reset ();
