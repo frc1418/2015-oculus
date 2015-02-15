@@ -19,7 +19,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://127.0.0.1:8887/ws";
+	public string websocketURL = "ws://127.0.0.1:8888/ws";
 
 	// variables
 
