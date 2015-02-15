@@ -42,6 +42,9 @@ public class ToteControler : MonoBehaviour {
 	private double longRightY = 200;
 	private double longRightDist;
 
+	private bool updateLim = true;
+	private bool updateSensor = true;
+
 	//Limit switches
 	private bool lim1;
 	private bool lim2;
@@ -96,16 +99,26 @@ public class ToteControler : MonoBehaviour {
 		initalY = transform.localPosition.y;
 		initalZ = transform.localPosition.z;
 
-		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitL", updateLimSwitches);
-		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitR", updateLimSwitches);
+		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitL", setUpdate);
+		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitR", setUpdate);
 
-		NetworkTables.Instance.AddListener (smartDashTable+"shortSensorValueL", updateSensors);
-		NetworkTables.Instance.AddListener (smartDashTable+"shortSensorValueR", updateSensors);
+		NetworkTables.Instance.AddListener (smartDashTable+"shortSensorValueL", setUpdate);
+		NetworkTables.Instance.AddListener (smartDashTable+"shortSensorValueR", setUpdate);
+
+		NetworkTables.Instance.AddListener (smartDashTable+"longSensorValueL", setUpdate);
+		NetworkTables.Instance.AddListener (smartDashTable+"longSensorValueR", setUpdate);
 	}
 
+	void setUpdate(string key, object value){
+		if (key.Equals ("toteLimitL") || key.Equals ("toteLimitL")) {
+			updateLim = true;
+		} else {
+			updateSensor = true;
+		}
+	}
 
-	void updateLimSwitches(string key, object value) {
-		Debug.Log ("Updated");
+	void updateLimSwitches() {
+		//Debug.Log ("Updated");
 		NetworkTables.Instance.GetBool(smartDashTable+"toteLimitL", out lim1);
 		NetworkTables.Instance.GetBool(smartDashTable+"toteLimitR", out lim2);
 
@@ -115,7 +128,7 @@ public class ToteControler : MonoBehaviour {
 		updateTote ();
 	}
 
-	void updateSensors(string key, object value){
+	void updateSensors(){
 		NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueL", out shortLeftY );
 		NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueR", out shortRightY);
 
@@ -236,6 +249,16 @@ public class ToteControler : MonoBehaviour {
 		} else {
 			connected = false;
 		}
-		updateToteColor ();
+
+		if (updateLim) {
+			updateLimSwitches();
+			updateLim = false;
+		}
+		if (updateSensor) {
+			updateSensors ();
+			updateSensor = false;
+		} else {
+			updateToteColor();
+		}
 	}
 }

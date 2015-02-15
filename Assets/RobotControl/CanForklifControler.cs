@@ -31,6 +31,9 @@ public class CanForklifControler : MonoBehaviour {
 	private float initalXPos;
 	private float initalYPos;
 	private float initalZPos;
+
+	private bool pendingUpdateCalibration = false;
+	private bool pendingUpdateLift = false;
 	
 	public float convertToLadderMeters(float value){
 		float conversionFactor = (ladderTop / (actualTop - actualBottom));
@@ -54,33 +57,39 @@ public class CanForklifControler : MonoBehaviour {
 		initalXPos = lift.transform.localPosition.x;
 		initalYPos = lift.transform.localPosition.y;
 		initalZPos = lift.transform.localPosition.z;
+
+		NetworkTables.Instance.AddListener (smartDashTable+"Can Forklift|Calibrated", setUpdate);
+		NetworkTables.Instance.AddListener (smartDashTable+"Can Forklift|Encoder", setUpdate);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (NetworkTables.Instance.connected) {
-			connected = true;
-			NetworkTables.Instance.GetBool(smartDashTable+"Can Forklift|Calibrated", out calibrated);
-			
-			if(calibrated){
-				double grabbedValue;
-				NetworkTables.Instance.GetNumber(smartDashTable+"Can Forklift|Encoder", out grabbedValue );
-				currentValue = (float)grabbedValue;
-			}
-		} else {
-			connected = false;
-		}
-		
-		if (connected && calibrated) {
-			currentLadderMeters = convertToLadderMeters(currentValue);
-			float rawValue = initalYPos + currentLadderMeters;
 
-
-			if(rawValue >=-1 && rawValue <= (ladderTop/200)){
-				lift.transform.localPosition = new Vector3(initalXPos, rawValue, initalZPos);
-			}
+	void setUpdate(string key, object value){
+		if (key.Equals ("Can Forklift|Calibrated")) {
+			pendingUpdateCalibration = true;
+		} else if (key.Equals ("Can Forklift|Encoder")) {
+			pendingUpdateLift = true;
 		}
+	}
+
+	void updateCalibration(){
+		NetworkTables.Instance.GetBool (smartDashTable + "Can Forklift|Calibrated", out calibrated);
+	}
+
+	void updateLift(){
+		double grabbedValue;
+		NetworkTables.Instance.GetNumber(smartDashTable+"Can Forklift|Encoder", out grabbedValue );
+		currentValue = (float)grabbedValue;
+
+		currentLadderMeters = convertToLadderMeters(currentValue);
+		float rawValue = initalYPos + currentLadderMeters;
 		
+		
+		if(rawValue >=-1 && rawValue <= (ladderTop/200)){
+			lift.transform.localPosition = new Vector3(initalXPos, rawValue, initalZPos);
+		}
+		updateColor ();
+	}
+
+	void updateColor(){
 		if (!connected) {
 			//Debug.Log("I AM CHANGING SHIT BRO");
 			lift.renderer.material.shader = translucent;
@@ -93,6 +102,29 @@ public class CanForklifControler : MonoBehaviour {
 				lift.renderer.material.color = Color.yellow;
 			}
 		}
+	}
+
+	// Update is called once per frame
+	void Update () {
+		if (NetworkTables.Instance.connected) {
+			connected = true;
+
+		} else {
+			connected = false;
+		}
+		
+		if (connected) {
+			if(pendingUpdateCalibration){
+				updateCalibration();
+				pendingUpdateCalibration = false;
+			}
+			if(calibrated && pendingUpdateLift){
+				updateLift();
+				pendingUpdateLift = false;
+			}
+		}
+		
+
 		//Debug.Log ("Connect: " + connected + " Calibrated: " + calibrated +" CurrentValue: " + currentLadderMeters); //+"Displacement: "+actualDisplacment+" LDiplace: "+ladderDisplacment+ " Connected: " + connected + " Calibrated: " + calibrated);
 	}
 }

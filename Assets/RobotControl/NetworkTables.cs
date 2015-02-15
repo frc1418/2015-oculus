@@ -23,7 +23,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://127.0.0.1:8888/ws";
+	public string websocketURL = "ws://127.0.0.1:8887/ws";
 
 	// variables
 
@@ -87,7 +87,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 			// notify anyone listening for this key
 			OnUpdate listener;
 			if (listeners.TryGetValue(key, out listener)) {
-				Debug.Log ("Got listener for " + key );
+				//Debug.Log ("Got listener for " + key );
 				listener(key, value);
 			}
 

@@ -37,6 +37,9 @@ public class ToteForliftControler : MonoBehaviour {
 	private float initalYPos;
 	private float initalZPos;
 
+	private bool pendingUpdateRungs = false;
+	private bool pendingUpdateCalibration = false;
+
 	public float convertToLadderMeters(float value, bool raw){
 		//Resets past reset value
 		/*if (value / resetValue >= 0) {
@@ -53,8 +56,6 @@ public class ToteForliftControler : MonoBehaviour {
 		return lm/100;
 
 	}
-
-
 
 	// Use this for initialization
 	void Start () {
@@ -78,73 +79,103 @@ public class ToteForliftControler : MonoBehaviour {
 		initalXPos = rungs[0].transform.localPosition.x;
 		initalYPos = rungs[0].transform.localPosition.y;
 		initalZPos = rungs[0].transform.localPosition.z;
+
+		NetworkTables.Instance.AddListener (smartDashTable+"Tote Forklift|Calibrated", setUpdate);
+		NetworkTables.Instance.AddListener (smartDashTable+"Tote Forklift|Encoder", setUpdate);
 	}
 
+	void setUpdate(string key, object value){
+		if (key.Equals ("Tote Forklift|Calibrated")) {
+			pendingUpdateCalibration = true;
+		} else if (key.Equals ("Tote Forklift|Encoder")) {
+			pendingUpdateRungs = true;
+		}
+	}
+	void updateCalibration(){
+		//Debug.Log("Calibrate");
+		NetworkTables.Instance.GetBool (smartDashTable + "Tote Forklift|Calibrated", out calibrated);
+	}
+
+	void updateRungs(){
+		//Debug.Log("Rungs");
+		updateColor ();
+		
+		double grabbedValue;
+		NetworkTables.Instance.GetNumber(smartDashTable+"Tote Forklift|Encoder", out grabbedValue);
+		currentValue = (float)grabbedValue;
+
+		currentLadderMeters = convertToLadderMeters(currentValue, true);
+		ladderDisplacment = convertToLadderMeters(actualDisplacment, false);
+		
+		for(int i = 0; i<=2; i++){
+			float currentDisplacement = ladderDisplacment * i;
+			float localCurrent = currentLadderMeters + currentDisplacement;
+			float rawValue = initalYPos + localCurrent;
+			
+			if(rawValue >=-1 && rawValue <= (ladderTop/200)){
+				//Debug.Log("On: "+i);
+				float x = initalXPos;
+				float y = initalYPos + localCurrent;
+				float z = initalZPos;
+				rungs[i].transform.localPosition = new Vector3(x, y, z);
+				
+			}else if(rawValue < -1){
+				//Debug.Log("Under on: "+i);
+				float x = (-1*initalXPos);
+				float y = initalYPos + (-1*localCurrent);
+				float z = initalZPos;
+				rungs[i].transform.localPosition = new Vector3(x, y, z);
+				
+			}else{
+				//Debug.Log("Over on: "+i);
+				float x = (-1*initalXPos);
+				float y = (ladderTop/200) - (localCurrent - (ladderTop/100));
+				float z = initalZPos;
+				rungs[i].transform.localPosition = new Vector3(x,y,z);
+			}
+		}
+	}
+
+	void updateColor(){
+		//Debug.Log("Color");
+		if (!connected) {
+			for(int i = 0; i<=2; i++){
+				rungColor[i] = rungs[i].renderer.material.color = transBlack;
+				rungs[i].renderer.material.shader = translucent;
+			}
+		} else {
+			if(calibrated){
+				for(int i = 0; i<=2; i++){
+					rungColor[i] = rungs[i].renderer.material.color = Color.green;
+					rungs[i].renderer.material.shader = defualt;
+					
+				}
+			}else{
+				for(int i = 0; i<=2; i++){
+					rungColor[i] = rungs[i].renderer.material.color = Color.yellow;
+					rungs[i].renderer.material.shader = defualt;
+				}
+			}
+		}
+	}
 
 	// Update is called once per frame
 	void Update () {
 		if (NetworkTables.Instance.connected) {
 			connected = true;
-			NetworkTables.Instance.GetBool(smartDashTable+"Tote Forklift|Calibrated", out calibrated);
-
-			if(calibrated){
-				double grabbedValue;
-				NetworkTables.Instance.GetNumber(smartDashTable+"Tote Forklift|Encoder", out grabbedValue );
-				currentValue = (float)grabbedValue;
-			}
 		} else {
 			connected = false;
 		}
 
-		if (connected && calibrated) {
-			currentLadderMeters = convertToLadderMeters(currentValue, true);
-			ladderDisplacment = convertToLadderMeters(actualDisplacment, false);
-
-			for(int i = 0; i<=2; i++){
-				float currentDisplacement = ladderDisplacment * i;
-				float localCurrent = currentLadderMeters + currentDisplacement;
-				float rawValue = initalYPos + localCurrent;
-
-				if(rawValue >=-1 && rawValue <= (ladderTop/200)){
-					//Debug.Log("On: "+i);
-					float x = initalXPos;
-					float y = initalYPos + localCurrent;
-					float z = initalZPos;
-					rungPos[i] = new Vector3(x, y, z);
-
-				}else if(rawValue < -1){
-					//Debug.Log("Under on: "+i);
-					float x = (-1*initalXPos);
-					float y = initalYPos + (-1*localCurrent);
-					float z = initalZPos;
-					rungPos[i] = new Vector3(x, y, z);
-
-				}else{
-					//Debug.Log("Over on: "+i);
-					float x = (-1*initalXPos);
-					float y = (ladderTop/200) - (localCurrent - (ladderTop/100));
-					float z = initalZPos;
-					rungPos[i] = new Vector3(x,y,z);
-				}
+		if (connected) {
+			if(pendingUpdateCalibration){
+				updateCalibration();
+				pendingUpdateCalibration = false;
 			}
-		}
-
-		if (!connected) {
-			for(int i = 0; i<=2; i++){
-				rungColor[i] = transBlack;
-				rungShader[i] = translucent;
-			}
-		} else {
 			if(calibrated){
-				for(int i = 0; i<=2; i++){
-					rungColor[i] = Color.green;
-					rungShader[i] = defualt;
-
-				}
-			}else{
-				for(int i = 0; i<=2; i++){
-					rungColor[i] = Color.yellow;
-					rungShader[i] = defualt;
+				if(pendingUpdateRungs){
+					updateRungs();
+					pendingUpdateRungs = false;
 				}
 			}
 		}
