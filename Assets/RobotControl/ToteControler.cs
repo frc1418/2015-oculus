@@ -102,8 +102,14 @@ public class ToteControler : MonoBehaviour {
 		initalX = transform.localPosition.x;
 		initalY = transform.localPosition.y;
 		initalZ = transform.localPosition.z;
+
+		NetworkTables.Instance.AddListener ("/silliness", got_a_value);
 	}
 
+
+	void got_a_value(string key, object value) {
+		Debug.Log ("I GOT SOMETHING: " + key + " " + value);
+	}
 
 	// Update is called once per frame
 	void Update () {

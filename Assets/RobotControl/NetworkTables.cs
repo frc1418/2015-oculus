@@ -7,6 +7,7 @@ using System.Threading;
 using ServiceStack.Text;
 using WebSocketSharp;
 
+
 /// <summary>
 /// An interface to NetworkTables via a websocket. Does not need to be added
 /// to a game element, as this is taken care of by the Singleton class.
@@ -17,6 +18,9 @@ using WebSocketSharp;
 /// </summary>
 public class NetworkTables : Singleton<NetworkTables> {
 
+	// declare the delegate here
+	public delegate void OnUpdate(String key, object value);
+
 	// properties
 
 	public string websocketURL = "ws://127.0.0.1:8888/ws";
@@ -24,6 +28,9 @@ public class NetworkTables : Singleton<NetworkTables> {
 	// variables
 
 	protected Dictionary<string, object> table = new Dictionary<string, object> ();
+
+	// key is the key that the listener is listening for
+	protected Dictionary<string, OnUpdate> listeners = new Dictionary<string, OnUpdate> ();
 
 	// websocket instance
 	protected WebSocket ws = null;
@@ -67,12 +74,23 @@ public class NetworkTables : Singleton<NetworkTables> {
 			// decode the json
 			JsonObject o = JsonObject.Parse(e.Data);
 
+			string key = o.Get("key");
+			object value = o.Get ("value");
+
 			// store it in the dictionary
-			if(!table.ContainsKey(o.Get("key"))){
-				table.Add(o.Get("key"), o.Get("value"));
+			if(!table.ContainsKey(key)){
+				table.Add(key, value);
 			}else{
-				table[o.Get("key")] = o.Get("value");
+				table[key] = value;
 			}
+
+			// notify anyone listening for this key
+			OnUpdate listener;
+			if (listeners.TryGetValue(key, out listener)) {
+				Debug.Log ("Got listener for " + key );
+				listener(key, value);
+			}
+
 			//Debug.Log("Key: "+o.Get("key")+"Value: "+o.Get("value"));
 		};
 
@@ -111,6 +129,22 @@ public class NetworkTables : Singleton<NetworkTables> {
 	}
 
 	#region API
+
+	public void AddListener(String key, OnUpdate listener) {
+		OnUpdate other;
+		if (!listeners.TryGetValue (key, out other)) {
+			listeners.Add (key, listener);
+		} else {
+			other += listener;
+		}
+	}
+
+	public void RemoveListener(String key, OnUpdate listener) {
+		OnUpdate other;
+		if (listeners.TryGetValue (key, out other)) {
+			other -= listener;
+		}
+	}
 
 	// returns true if a value was retrieved, false otherwise
 	public bool GetString(string key, out string value) {
