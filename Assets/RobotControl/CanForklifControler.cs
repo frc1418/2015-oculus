@@ -10,7 +10,7 @@ public class CanForklifControler : MonoBehaviour {
 	public Shader translucent;
 	public Color transBlack;
 
-	private string smartDashTable = "";
+	private string smartDashTable = "/SmartDashboard/";
 	
 	//Preset positions from the encoder
 	private static float actualTop = 10180;
@@ -63,9 +63,9 @@ public class CanForklifControler : MonoBehaviour {
 	}
 
 	void setUpdate(string key, object value){
-		if (key.Equals ("Can Forklift|Calibrated")) {
+		if (key.Equals (smartDashTable+"Can Forklift|Calibrated")) {
 			pendingUpdateCalibration = true;
-		} else if (key.Equals ("Can Forklift|Encoder")) {
+		} else if (key.Equals (smartDashTable+"Can Forklift|Encoder")) {
 			pendingUpdateLift = true;
 		}
 	}

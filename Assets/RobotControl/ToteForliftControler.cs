@@ -9,13 +9,13 @@ public class ToteForliftControler : MonoBehaviour {
 	public Shader translucent;
 	public Color transBlack;
 
-	private string smartDashTable = "";
+	private string smartDashTable = "/SmartDashboard/";
 
 	//Preset positions from the encoder
-	private static float actualTop = 23973;
-	private static float actualDisplacment = 4356;
-	private static float actualBottom = 8293;
-	private static float resetValue = 260;
+	private static float actualTop = 18805;
+	private static float actualDisplacment = 3320;
+	private static float actualBottom = 6572;
+	//private static float resetValue = 260;
 
 	//State vars
 	private bool calibrated = false;
@@ -85,9 +85,10 @@ public class ToteForliftControler : MonoBehaviour {
 	}
 
 	void setUpdate(string key, object value){
-		if (key.Equals ("Tote Forklift|Calibrated")) {
+		Debug.Log("UPDATE The GOD DAMN TOTE");
+		if (key.Equals (smartDashTable+"Tote Forklift|Calibrated")) {
 			pendingUpdateCalibration = true;
-		} else if (key.Equals ("Tote Forklift|Encoder")) {
+		} else if (key.Equals (smartDashTable+"Tote Forklift|Encoder")) {
 			pendingUpdateRungs = true;
 		}
 	}

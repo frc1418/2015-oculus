@@ -11,7 +11,7 @@ public class ToteControler : MonoBehaviour {
 	private double rotation = 0;
 	private bool connected;
 
-	private string smartDashTable = "";
+	private string smartDashTable = "/SmartDashboard/";
 	
 	private enum SENSORS
 	{
@@ -36,7 +36,7 @@ public class ToteControler : MonoBehaviour {
 	private double shortRightDist;
 		
 	//Long range sensore relative pos
-	private double longRightX = 20.5;
+	private double longRightX = 12.5;
 	private double longLeftY = 200;
 	private double longLeftDist;
 	private double longRightY = 200;
@@ -110,7 +110,7 @@ public class ToteControler : MonoBehaviour {
 	}
 
 	void setUpdate(string key, object value){
-		if (key.Equals ("toteLimitL") || key.Equals ("toteLimitL")) {
+		if (key.Equals (smartDashTable+"toteLimitL") || key.Equals (smartDashTable+"toteLimitL")) {
 			updateLim = true;
 		} else {
 			updateSensor = true;
@@ -129,45 +129,47 @@ public class ToteControler : MonoBehaviour {
 	}
 
 	void updateSensors(){
-		NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueL", out shortLeftY );
-		NetworkTables.Instance.GetNumber(smartDashTable+"shortSensorValueR", out shortRightY);
+		if (lim1 || lim2) {
+			NetworkTables.Instance.GetNumber (smartDashTable + "shortSensorValueL", out shortLeftY);
+			NetworkTables.Instance.GetNumber (smartDashTable + "shortSensorValueR", out shortRightY);
 
-		NetworkTables.Instance.GetNumber(smartDashTable+"longSensorValueL", out longLeftY);
-		NetworkTables.Instance.GetNumber(smartDashTable+"longSensorValueR", out longRightY);
+			NetworkTables.Instance.GetNumber (smartDashTable + "longSensorValueL", out longLeftY);
+			NetworkTables.Instance.GetNumber (smartDashTable + "longSensorValueR", out longRightY);
 
-		//Relative to front of robot
-		shortLeftDist = shortLeftY - 7.5;
-		shortRightDist = shortRightY - 6;
-		longLeftDist = longLeftY - 19.5;
-		longRightDist = longRightY - 19.5;
+			//Relative to front of robot
+			shortLeftDist = shortLeftY - 7.5;
+			shortRightDist = shortRightY - 6;
+			longLeftDist = longLeftY - 19.5;
+			longRightDist = longRightY - 19.5;
 		
 		
-		if (shortLeftY < 35 && shortRightY < 35) {
-			sensor = SENSORS.Short;
+			if (shortLeftY < 35 && shortRightY < 35) {
+				sensor = SENSORS.Short;
 			
-		} else if (longLeftY < 145 && longRightY < 145) {
-			sensor = SENSORS.Long;
+			} else if (longLeftY < 145 && longRightY < 145) {
+				sensor = SENSORS.Long;
 			
-		} else if (shortLeftY < 35){
-			sensor = SENSORS.SoloL;
-			displacement = shortLeftDist/100;
+			} else if (shortLeftY < 35) {
+				sensor = SENSORS.SoloL;
+				displacement = shortLeftDist / 100;
 			
-		} else if (shortRightY < 35){
-			sensor = SENSORS.SoloR;
-			displacement = shortRightDist/100;
+			} else if (shortRightY < 35) {
+				sensor = SENSORS.SoloR;
+				displacement = shortRightDist / 100;
 			
-		}else if (longLeftY < 145){
-			sensor = SENSORS.SoloL;
-			displacement = longLeftDist/100;
+			} else if (longLeftY < 145) {
+				sensor = SENSORS.SoloL;
+				displacement = longLeftDist / 100;
 			
-		}else if (longRightY < 145){
-			sensor = SENSORS.SoloR;
-			displacement = longRightDist/100;
+			} else if (longRightY < 145) {
+				sensor = SENSORS.SoloR;
+				displacement = longRightDist / 100;
 			
-		}else{
-			sensor = SENSORS.OutOfRange;
+			} else {
+				sensor = SENSORS.OutOfRange;
+			}
+			updateTote ();
 		}
-		updateTote ();
 	}
 
 	void updateTote(){
@@ -260,5 +262,6 @@ public class ToteControler : MonoBehaviour {
 		} else {
 			updateToteColor();
 		}
+		//Debug.Log ("Sensor: " + sensor);
 	}
 }

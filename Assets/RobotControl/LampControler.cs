@@ -6,7 +6,7 @@ public class LampControler : MonoBehaviour {
 	private bool connected;
 	private bool reversedDrive;
 
-	private string smartDashTable = "";
+	private string smartDashTable = "/SmartDashboard/";
 
 	
 	// Use this for initialization
