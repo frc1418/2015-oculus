@@ -3,6 +3,7 @@ using System.Collections;
 using System.Net.Sockets;
 using System.IO;
 using System;
+using System.Threading;
 
 public class RobotCamera : MonoBehaviour {
 	private int fps = 10;
@@ -40,20 +41,27 @@ public class RobotCamera : MonoBehaviour {
 		sw.Write (BitConverter.GetBytes (compression));
 		sw.Write (BitConverter.GetBytes (size));
 		sw.Flush ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		buffer = read(s, 4);
 
+		Thread thread = new Thread(new ThreadStart(Read));
+		thread.Start();
+	}
+
+	void Read(){
+		buffer = read(s, 4);
+		
 		buffer = read(s, 4);
 		nextSize = BitConverter.ToInt32 (buffer,0);
 		Debug.Log ("Size: " + nextSize+" Bytes: "+buffer);
-
+		
 		buffer = read(s, nextSize);
 
 		var tex = new Texture2D (4, 4);
 		tex.LoadImage (buffer);
 		renderer.material.mainTexture = tex;
+	}
+
+	// Update is called once per frame
+	void Update () {
+
 	}
 }
