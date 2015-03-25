@@ -44,18 +44,18 @@ public class NetworkTables : Singleton<NetworkTables> {
 	}
 
 	class NumberMessage {
-		public string key;
-		public double value;
+		public string k;
+		public double v;
 	}
 
 	class StringMessage {
-		public string key;
-		public string value;
+		public string k;
+		public string v;
 	}
 
 	class BooleanMessage {
-		public string key;
-		public bool value;
+		public string k;
+		public bool v;
 	}
 
 	// Use this for initialization
@@ -201,8 +201,8 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 		// create the json blob here
 		var msg = new NumberMessage ();
-		msg.key = key;
-		msg.value = value;
+		msg.k = key;
+		msg.v = value;
 		
 		//ws.SendAsync(msg.ToJson(), null);
 	}
@@ -217,8 +217,8 @@ public class NetworkTables : Singleton<NetworkTables> {
 		var msg = new StringMessage();
 		
 		Debug.Log(msg);
-		msg.key = key;
-		msg.value = value;
+		msg.k = key;
+		msg.v = value;
 		//string json = msg.ToJson ();
 		//Debug.Log ("Sending: "+ json);
 		//ws.SendAsync(json, null);
@@ -234,8 +234,8 @@ public class NetworkTables : Singleton<NetworkTables> {
 		var msg = new BooleanMessage();
 		
 		Debug.Log(msg);
-		msg.key = key;
-		msg.value = value;
+		msg.k = key;
+		msg.v = value;
 		//string json = msg.ToJson ();
 		//Debug.Log ("Sending: "+ json);
 		//ws.SendAsync(json, null);
