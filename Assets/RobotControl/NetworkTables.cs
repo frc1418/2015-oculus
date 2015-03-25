@@ -23,11 +23,11 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// properties
 
-	public string websocketURL = "ws://127.0.0.1:8888/ws";
+	public string websocketURL = "ws://127.0.0.1:8888/networktables/ws";
 
 	// variables
 
-	protected Dictionary<string, object> table = new Dictionary<string, object> ();
+	protected Dictionary<string, string> table = new Dictionary<string, string> ();
 
 	// key is the key that the listener is listening for
 	protected Dictionary<string, OnUpdate> listeners = new Dictionary<string, OnUpdate> ();
@@ -46,13 +46,16 @@ public class NetworkTables : Singleton<NetworkTables> {
 	class NumberMessage {
 		public string key;
 		public double value;
-		public string action = "write";
 	}
 
 	class StringMessage {
 		public string key;
 		public string value;
-		public string action = "write";
+	}
+
+	class BooleanMessage {
+		public string key;
+		public bool value;
 	}
 
 	// Use this for initialization
@@ -74,8 +77,15 @@ public class NetworkTables : Singleton<NetworkTables> {
 			// decode the json
 			JsonObject o = JsonObject.Parse(e.Data);
 
-			string key = o.Get("key");
-			object value = o.Get ("value");
+			string robotConnected = o.Get("r");
+			if (robotConnected != null) {
+				// ignore this for now?
+				return;
+			}
+
+			string key = o.Get("k");
+			string value = o.Get ("v");
+			//string isNew = o.Get ("n");
 
 			// store it in the dictionary
 			if(!table.ContainsKey(key)){
@@ -148,9 +158,9 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// returns true if a value was retrieved, false otherwise
 	public bool GetString(string key, out string value) {
-		object tmpValue;
+		string tmpValue;
 		if (table.TryGetValue (key, out tmpValue)) {
-			value = (string)tmpValue;
+			value = tmpValue;
 			return true;
 		}
 
@@ -160,7 +170,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 	// returns true if a value was retrieved, false otherwise
 	public bool GetNumber(string key, out double value) {
-		object tmpValue;
+		string tmpValue;
 		if (table.TryGetValue (key, out tmpValue)) {
 			value = Convert.ToDouble(tmpValue);
 			return true;
@@ -171,7 +181,7 @@ public class NetworkTables : Singleton<NetworkTables> {
 	}
 
 	public bool GetBool(string key, out bool value) {
-		object tmpValue;
+		string tmpValue;
 		if (table.TryGetValue (key, out tmpValue)) {
 			value = Convert.ToBoolean(tmpValue);
 			return true;
@@ -201,9 +211,27 @@ public class NetworkTables : Singleton<NetworkTables> {
 
 		if (ws == null || ws.ReadyState != WebSocketState.Open) {
 			// TODO: queue up any writes
+			return;
 		}
 		Debug.Log (key+" "+value);
 		var msg = new StringMessage();
+		
+		Debug.Log(msg);
+		msg.key = key;
+		msg.value = value;
+		//string json = msg.ToJson ();
+		//Debug.Log ("Sending: "+ json);
+		//ws.SendAsync(json, null);
+	}
+
+	public void PutBool(string key, bool value) {
+		
+		if (ws == null || ws.ReadyState != WebSocketState.Open) {
+			// TODO: queue up any writes
+			return;
+		}
+		Debug.Log (key+" "+value);
+		var msg = new BooleanMessage();
 		
 		Debug.Log(msg);
 		msg.key = key;
