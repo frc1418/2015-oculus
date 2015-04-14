@@ -18,6 +18,9 @@ technologies like this have a lot of potential. We think that this type
 of technology can potentially change the way that we interact with and
 control our robots in the future.
 
+This project requires Unity Pro for compilation. Unity Pro licenses were
+generously provided to our team by Unity Technologies.
+
 **Checkout our whitepaper for pictures and video: [here](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)**
 
 Features
