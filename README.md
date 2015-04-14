@@ -82,6 +82,28 @@ the robot.
 The full math and code can be seen at:
 
     ./Assets/RobotControl/ToteControler.cs
+    
+Simulation
+================
+
+If you would like to run this program to see some moving parts it does work with
+the PyFRC simulator. To make this work you must have pyfrc installed (through pip3),
+python3, and you must clone our UI and Robot code. Once you have all of this installed
+you can run our simulated robot code with:
+
+    cd 2015-robot/robot/
+    python3 robot.py sim
+
+You must also run our driverstation client/server with:
+
+	cd 2015-ui/
+    python3 driverStationServer.py
+    
+Once that is run you can open the VR-UI while moving values with buttons 5 and 4 on
+joystick 1 and 2. You should see the simulation of the Masts moving.
+
+If you would like this simulation to work with joysticks you must install a python
+module called PyGame. This any joysticks plugged into the computer to be accessed.
 
 Authors
 =======
