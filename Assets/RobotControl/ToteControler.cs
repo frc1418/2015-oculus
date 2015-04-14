@@ -99,6 +99,7 @@ public class ToteControler : MonoBehaviour {
 		initalY = transform.localPosition.y;
 		initalZ = transform.localPosition.z;
 
+		//Listeners
 		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitL", setUpdate);
 		NetworkTables.Instance.AddListener (smartDashTable+"toteLimitR", setUpdate);
 
@@ -109,6 +110,8 @@ public class ToteControler : MonoBehaviour {
 		NetworkTables.Instance.AddListener (smartDashTable+"longSensorValueR", setUpdate);
 	}
 
+
+	//Sets the updates
 	void setUpdate(string key, object value){
 		if (key.Equals (smartDashTable+"toteLimitL") || key.Equals (smartDashTable+"toteLimitL")) {
 			updateLim = true;
@@ -117,11 +120,13 @@ public class ToteControler : MonoBehaviour {
 		}
 	}
 
+
 	void updateLimSwitches() {
 		//Debug.Log ("Updated");
 		NetworkTables.Instance.GetBool(smartDashTable+"toteLimitL", out lim1);
 		NetworkTables.Instance.GetBool(smartDashTable+"toteLimitR", out lim2);
 
+		//If both pressed
 		if (!lim1 && !lim2) {
 			sensor = SENSORS.Lim;
 		}
@@ -136,14 +141,14 @@ public class ToteControler : MonoBehaviour {
 			NetworkTables.Instance.GetNumber (smartDashTable + "longSensorValueL", out longLeftY);
 			NetworkTables.Instance.GetNumber (smartDashTable + "longSensorValueR", out longRightY);
 
-			//Relative to front of robot
+
 			shortLeftDist = shortLeftY - 7.5;
 			shortRightDist = shortRightY - 6;
 			longLeftDist = longLeftY - 19.5;
 			longRightDist = longRightY - 19.5;
 		
 		
-			if (shortLeftY < 35 && shortRightY < 35) {
+			if (shortLeftY < 0 && shortRightY < 0) {
 				sensor = SENSORS.Short;
 			
 			} else if (longLeftY < 145 && longRightY < 145) {
@@ -183,14 +188,14 @@ public class ToteControler : MonoBehaviour {
 	void updateLocalVars(){
 		if (sensor == SENSORS.Short) {
 			calculate(shortLeftDist,shortRightDist, shortRightX);
-			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " LY: " + shortLeftY + " RY: " + shortRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
+			//Debug.Log ("sensor: " + sensor + " LY: " + shortLeftY + " RY: " + shortRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
 			
 		} else if (sensor == SENSORS.Long) {
 			calculate(longLeftDist,longRightDist,longRightX);
-			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " LY: " + longLeftY + " RY: " + longRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
+			//Debug.Log ("sensor: " + sensor + " LY: " + longLeftY + " RY: " + longRightY + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
 		}else if (sensor == SENSORS.OutOfRange || sensor == SENSORS.Lim) {
 			reset();
-			//Debug.Log ("outOfRange: " + outOfRange + " sensor: " + sensor + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
+			//Debug.Log ("sensor: " + sensor + " slope: " + slope + " angle:" + (float)angle + " displacement: " + displacement);
 		}
 	}
 

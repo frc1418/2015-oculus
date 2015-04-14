@@ -5,7 +5,7 @@ public class KeyListener : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		OVRManager.display.mirrorMode = false;
+		//OVRManager.display.mirrorMode = false;
 		//System.Diagnostics.Process.GetCurrentProcess().
 	}
 	

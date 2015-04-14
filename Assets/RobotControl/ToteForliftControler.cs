@@ -85,7 +85,7 @@ public class ToteForliftControler : MonoBehaviour {
 	}
 
 	void setUpdate(string key, object value){
-		Debug.Log("UPDATE The GOD DAMN TOTE");
+		//Debug.Log("UPDATE The GOD DAMN TOTE");
 		if (key.Equals (smartDashTable+"Tote Forklift|Calibrated")) {
 			pendingUpdateCalibration = true;
 		} else if (key.Equals (smartDashTable+"Tote Forklift|Encoder")) {
@@ -162,6 +162,7 @@ public class ToteForliftControler : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		Debug.Log ("Tote Fork | connected: " + connected + " calibrated: " + calibrated);
 		if (NetworkTables.Instance.connected) {
 			connected = true;
 		} else {

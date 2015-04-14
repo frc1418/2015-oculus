@@ -106,6 +106,7 @@ public class CanForklifControler : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		Debug.Log ("Can Fork | connected: " + connected + " calibrated: " + calibrated);
 		if (NetworkTables.Instance.connected) {
 			connected = true;
 
