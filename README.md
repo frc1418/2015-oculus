@@ -5,8 +5,8 @@ FRC1418 2015 Oculus Rift driver station interface
 * Factsheet: [Google Doc](https://docs.google.com/document/d/1irbUm-Qfxz_Ua2XiB5KzYWG2Ec5Xhr038NqL-k4FveA)
 * Oculus Rift Whitepaper: [Google Doc](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)
 
-Team 1418's Oculus Rift driver station interface We're really excited
-to release our Oculus Rift code for 2015!
+We're really excited to show off the details of our Oculus Rift interface and
+release the Oculus code for 2015!
 
 During the build season our team came up with the idea of using the 
 Oculus to help drive our robot. We all put in some money to get it.
