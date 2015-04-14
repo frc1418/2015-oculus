@@ -3,21 +3,25 @@ FRC1418 2015 Oculus Rift driver station interface
 
 * Code: [Robot](https://github.com/frc1418/2015-robot) | [UI](https://github.com/frc1418/2015-ui) | [Image Processing](https://github.com/frc1418/2015-vision) | **Oculus Rift**
 * Factsheet: [Google Doc](https://docs.google.com/document/d/1irbUm-Qfxz_Ua2XiB5KzYWG2Ec5Xhr038NqL-k4FveA)
-* Oculus Rift Documentation: [Google Doc](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)
+* Oculus Rift Whitepaper: [Google Doc](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)
 
-Team 1418's Oculus Rift driver station interface We're really excited
-to release our Oculus Rift code for 2015!
+We're really excited to show off the details of our Oculus Rift interface and
+release the Oculus code for 2015!
 
 During the build season our team came up with the idea of using the 
 Oculus to help drive our robot. We all put in some money to get it.
 We developed our code in a 3d game development platform called Unity
-that already had an integration with the Oculus.
+that already had very good integration with the Oculus.
 
-Although the Oculus was said to be a safety hazard and not allowed 
-at competition it has a lot of potential. We think that this piece
-of technology can change a lot in the world of robotics.
+Although ultimately FIRST disallowed usage of the Oculus in competition,
+technologies like this have a lot of potential. We think that this type
+of technology can potentially change the way that we interact with and
+control our robots in the future.
 
-**Checkout our google doc's documentation for pictures and video: [here](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)**
+This project requires Unity Pro for compilation. Unity Pro licenses were
+generously provided to our team by Unity Technologies.
+
+**Checkout our whitepaper for pictures and video: [here](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)**
 
 Features
 ================
@@ -27,9 +31,8 @@ Camera mounted on the Oculus
 
 ![ScreenShot](Pictures/CameraWindow.png)
 
-We had a camera 3d printed mounted on the front of the Oculus. We
-used this to make sure that the driver still was able to see what
-was going on in the game.
+We used a 3d printer to create a mount for a camera on the front of the
+Oculus. This was intended to allow the operator to see their surroundings.
 
 Code can be seen at:
 
