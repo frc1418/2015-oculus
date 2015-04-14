@@ -23,8 +23,8 @@ generously provided to our team by Unity Technologies.
 
 **Checkout our whitepaper for pictures and video: [here](https://docs.google.com/document/d/1-8BB0rzydTxpMA9buoe7J2LLSpy6g8wTbeJXNPeNb_0/)**
 
-If you do not own a Unity Pro license you are in luck! See our 1.0 release
-that has **compiled binaries: [here](https://github.com/frc1418/2015-oculus/releases/tag/1.0)** 
+**If you do not own a Unity Pro license you are in luck! See our 1.0 release**
+**that has compiled binaries: [here](https://github.com/frc1418/2015-oculus/releases/tag/1.0)** 
 
 Features
 ================
